@@ -1,0 +1,34 @@
+version: '3.5'
+services:
+  redisinsight:
+    image: redislabs/redisinsight:latest
+    user: root
+    ports:
+      - '8001:8001'
+    volumes:
+      - /opt/redisinsight/data:/db
+  redis:
+    image: xxxx.mirror.aliyuncs.com/library/redis:6.0
+    container_name: debug-redis
+    command: redis-server --maxclients 100
+    ports:
+      - 6379:6379
+    volumes:
+      - /var/lib/redis/data:/data
+  mysql:
+    image: mysql:5.7
+    container_name: debug-db
+    restart: always
+    network_mode: "host"
+    environment:
+      MYSQL_ROOT_PASSWORD: "bzcyjrg"
+      MYSQL_DATABASE: debug
+      MYSQL_USER: debug
+      MYSQL_PASSWORD: "bzcyjrg"
+      # ports:
+      # - 3306:3306
+    volumes:
+      - /tmp:/tmp
+      - /home/geosmart/etc/mysql/conf.d/mysql.conf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - /opt/tool/data/mysql:/var/lib/mysql
+    command: [ '--character-set-server=utf8mb4', '--collation-server=utf8mb4_bin' ]
